@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Typography from '@mui/material/Typography';
-import { TextField } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 
 const style = {
     position: 'absolute',
@@ -18,8 +18,18 @@ const style = {
     p: 4,
 };
 
-const BookingModal = ({ openBooking, handleBookingClose, booking }) => {
+const BookingModal = ({ openBooking, handleBookingClose, booking, date }) => {
     const { name, time } = booking;
+
+    const handleBookingSubmit = e => {
+        e.preventDefault();
+
+        // TODO: Collect data and send data to server
+
+        handleBookingClose();
+        alert('submitting');
+    }
+
     return (
 
         <Modal
@@ -38,13 +48,34 @@ const BookingModal = ({ openBooking, handleBookingClose, booking }) => {
                     <Typography id="transition-modal-title" variant="h6" component="h2">
                         {name}
                     </Typography>
-                    <form>
+                    <form onSubmit={handleBookingSubmit}>
                         <TextField
-                            label="Size"
+                            disabled
+                            sx={{ width: '90%', m: 1 }}
                             id="outlined-size-small"
-                            defaultValue="Small"
+                            defaultValue={time}
                             size="small"
                         />
+                        <TextField
+                            sx={{ width: '90%', m: 1 }}
+                            id="outlined-size-small"
+                            placeholder="Your Name"
+                            size="small"
+                        />
+                        <TextField
+                            sx={{ width: '90%', m: 1 }}
+                            id="outlined-size-small"
+                            placeholder="Phone Number"
+                            size="small"
+                        />
+                        <TextField
+                            disabled
+                            sx={{ width: '90%', m: 1 }}
+                            id="outlined-size-small"
+                            defaultValue={date.toDateString()}
+                            size="small"
+                        />
+                        <Button type="submit" variant="contained" style={{ backgroundColor: "#5CE7ED", color: 'black', margin: 8 }}>BOOK NOW</Button>
                     </form>
                 </Box>
             </Fade>
