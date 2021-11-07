@@ -59,16 +59,18 @@ const Login = () => {
                         <Button sx={{ width: '75%', m: 1 }} variant="contained" type="submit" style={{ backgroundColor: "#5CE7ED", color: 'black' }}>Login</Button>
 
 
-                        {loading && <CircularProgress />}
+
                         {user.email && !authError && <Alert severity="success">Login Successfully!</Alert>}
                         {authError && <Alert severity="error">{authError}</Alert>}
                     </form>
 
                     <p>Or</p>
+
                     <Button onClick={handleGoogleSignIn} sx={{ width: '75%', m: 1 }} variant="contained" type="submit" style={{
                         backgroundColor: "#f44336", color: 'black'
                     }}>Google Sign In</Button>
-
+                    <br></br>
+                    {loading && <CircularProgress />}
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <img style={{ width: '100%' }} src={login} alt="" />

@@ -78,6 +78,8 @@ const useFirebase = () => {
         signInWithPopup(auth, googleProvider)
             .then((result) => {
                 const user = result.user;
+                const destination = location?.state?.from || '/';
+                history.replace(destination);
                 setAuthError('');
             }).catch((error) => {
                 const errorMessage = error.message;
