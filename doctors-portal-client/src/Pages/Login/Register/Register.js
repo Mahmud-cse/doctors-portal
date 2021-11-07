@@ -1,11 +1,14 @@
-import { Button, Container, Grid, TextField, Typography } from '@mui/material';
+import { Alert, Button, CircularProgress, Container, Grid, TextField, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import useAuth from '../../../hooks/useAuth';
 import login from '../../../images/login.png';
 
 
 const Register = () => {
     const [loginData, setLoginData] = useState({});
+    const { user, registerUser, loading, authError } = useAuth();
+
     const handleOnChange = e => {
         const field = e.target.name;
         const value = e.target.value;
@@ -20,7 +23,7 @@ const Register = () => {
             alert('Your password did not match');
             return;
         } else {
-            alert('Registration successfull');
+            registerUser(loginData.email, loginData.password);
         }
     }
 
@@ -31,7 +34,7 @@ const Register = () => {
                     <Typography sx={{ fontWeight: 'medium' }} vaiant="body1" gutterBottom>
                         Register
                     </Typography>
-                    <form onSubmit={handleLoginSubmit}>
+                    {!loading && <form onSubmit={handleLoginSubmit}>
                         <TextField
                             sx={{ width: '75%', m: 1 }}
                             id="standard-basic"
@@ -64,7 +67,10 @@ const Register = () => {
                         </NavLink>
 
                         <Button sx={{ width: '75%', m: 1 }} variant="contained" type="submit" style={{ backgroundColor: "#5CE7ED", color: 'black' }}>Register</Button>
-                    </form>
+                    </form>}
+                    {loading && <CircularProgress />}
+                    {user.email && !authError && <Alert severity="success">User Created Successfully!</Alert>}
+                    {authError && <Alert severity="error">{authError}</Alert>}
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <img style={{ width: '100%' }} src={login} alt="" />
