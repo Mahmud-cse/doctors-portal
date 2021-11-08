@@ -46,13 +46,22 @@ async function run() {
             res.json(result);
         });
 
-        // update data in server
+        // update/insert data in server
         app.put('/users/', async (req, res) => {
             const user = req.body;
             const filter = { email: user.email };
             const options = { upsert: true };
             const updateDoc = { $set: user };
             const result = await usersCollection.updateOne(filter, updateDoc, options);
+            res.json(result);
+        });
+
+        // search by email and set them a role
+        app.put('/users/admin', async (req, res) => {
+            const user = req.body;
+            const filter = { email: user.email };
+            const updateDoc = { $set: { role: 'admin' } };
+            const result = await usersCollection.updateOne(filter, updateDoc);
             res.json(result);
         });
     }
