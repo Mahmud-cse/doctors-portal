@@ -3,22 +3,24 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import doctor from '../../../images/doctor.png';
 import bg from '../../../images/appointment-bg.png';
-import { Button, Typography } from '@mui/material';
+import { Button, Container, Typography } from '@mui/material';
 
 const appointmentBg = {
     background: `url(${bg})`,
     backgroundColor: 'rgba(60, 85, 95,0.9)',
     backgroundBlendMode: 'darken, luminosity',
     marginTop: 170,
+    width: "auto",
     backgroundRepeat: 'no-repeat',
 }
 
 const AppointmentBanner = () => {
     return (
-        <Box style={appointmentBg} sx={{ flexGrow: 1 }}>
+
+        <Box style={appointmentBg} sx={{ flexGrow: 1, mb: 2, p: 2 }}>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
-                    <img style={{ width: 400, marginTop: '-110px' }} src={doctor} alt="" />
+                    <img style={{ width: 300, marginBottom: "-20px" }} src={doctor} alt="" />
                 </Grid>
                 <Grid item xs={12} md={6} sx={{ display: 'flex', textAlign: 'left', pr: 2, alignItems: 'center' }}>
                     <Box>

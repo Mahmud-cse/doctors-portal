@@ -1,54 +1,94 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import { Link, NavLink } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
+// start here
+import { makeStyles } from '@material-ui/core/styles';
+// npm install @material-ui/core --save
+// npm install @material-ui/icons
+
+import MoreIcon from '@material-ui/icons/MoreVert';
+import { IconButton, Menu, MenuItem } from '@mui/material';
+
+
+const useStyles = makeStyles(theme => ({
+    sectionDesktop: {
+        display: "none",
+        [theme.breakpoints.up('md')]: {
+            display: "flex",
+
+        },
+    },
+}))
 
 const Navigation = () => {
     const { user, logOut } = useAuth();
 
+    const classes = useStyles();
+    const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = useState(null);
+    const isMobileMenuOpen = Boolean(mobileMenuAnchorEl);
+
+    const openMobileMenu = (e) => {
+        setMobileMenuAnchorEl(e.currentTarget);
+    }
+
+    const closeMobileMenu = () => {
+        setMobileMenuAnchorEl(null);
+    }
+
+    const mobileMenu = (
+        <Menu anchorEl={mobileMenuAnchorEl} id="mobile-menu" keepMounted open={isMobileMenuOpen}>
+            <MenuItem onClick={closeMobileMenu} component={Link} to="/">Home</MenuItem>
+            <MenuItem onClick={closeMobileMenu} component={Link} to="/appointment">APPOINTMENT</MenuItem>
+            {
+                user?.email ?
+                    <MenuItem onClick={logOut} to="/" component={Link}>Logout</MenuItem>
+                    :
+                    <MenuItem onClick={closeMobileMenu} component={Link} to="/login">Login</MenuItem>
+            }
+            {
+                user?.email ?
+                    <MenuItem onClick={closeMobileMenu} component={Link} to="/dashboard">Dashboard</MenuItem>
+                    :
+                    " "
+            }
+        </Menu>
+    )
+
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
+            <AppBar position="sticky" style={{ background: 'transparent', boxShadow: 'none' }}>
                 <Toolbar>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{ mr: 2 }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Doctors Portal
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'black' }} align='left'>
+                        <NavLink style={{ textDecoration: "none", color: "black" }} to="/" > Doctors Portal</NavLink>
                     </Typography>
-                    <NavLink style={{ textDecoration: "none", color: "white", marginBottom: "2px" }} to="/appointment">APPOINTMENT</NavLink>
-                    {
-                        user.email ?
+                    <div className={classes.sectionDesktop}>
+                        <Button style={{ textDecoration: "none", color: "black" }} color="inherit" component={Link} to="/appointment">APPOINTMENT</Button>
+                        {
+                            user?.email ?
+                                <Button color="inherit" component={Link} style={{ textDecoration: "none", color: "black" }} to="/dashboard">Dashboard</Button>
+                                :
+                                " "
+                        }
 
-                            <Box>
-                                <NavLink style={{ textDecoration: "none", color: "white" }} to="/dashboard">
-                                    <Button color="inherit">Dashboard</Button>
-                                </NavLink>
-
-                                <Button onClick={logOut} color="inherit">Logout</Button>
-                            </Box>
-
-
-                            :
-                            <NavLink style={{ textDecoration: "none", color: "white" }} to="/login">
-                                <Button color="inherit">Login</Button>
-                            </NavLink>
-                    }
+                        {
+                            user?.email ?
+                                <Button onClick={logOut} to="/" color="inherit" component={Link} style={{ color: "black" }}>Logout</Button>
+                                :
+                                <Button style={{ textDecoration: "none", color: "black" }} component={Link} to="/login" color="inherit">Login</Button>
+                        }
+                    </div>
+                    <IconButton onClick={openMobileMenu}>
+                        <MoreIcon></MoreIcon>
+                    </IconButton>
                 </Toolbar>
             </AppBar>
-        </Box>
+            {mobileMenu}
+        </Box >
     );
 };
 
