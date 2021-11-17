@@ -5,6 +5,8 @@ const admin = require("firebase-admin");
 require('dotenv').config();
 const { MongoClient } = require('mongodb');
 const port = process.env.PORT || 5000;
+const ObjectId = require('mongodb').ObjectId;
+const stripe = require('stripe')(process.env.STRIPE_SECRET);
 
 // doctors-portal-firebase-adminsdk.json
 
@@ -53,10 +55,31 @@ async function run() {
             res.json(appointments);
         });
 
+        // get single appointment by id
+        app.get('/appointments/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await appointmentsCollection.findOne(query);
+            res.json(result);
+        })
+
         // Send data to server
         app.post('/appointments', async (req, res) => {
             const appointment = req.body;
             const result = await appointmentsCollection.insertOne(appointment);
+            res.json(result);
+        });
+
+        app.put('/appointments/:id', async (req, res) => {
+            const id = req.params.id;
+            const payment = req.body;
+            const filter = { _id: ObjectId(id) };
+            const updateDoc = {
+                $set: {
+                    payment: payment
+                }
+            };
+            const result = await appointmentsCollection.updateOne(filter, updateDoc);
             res.json(result);
         });
 
@@ -110,6 +133,22 @@ async function run() {
             else {
                 res.status(403).json({ message: 'You do not have access to make an admin' });
             }
+        });
+
+        // api for stripe connect
+        app.post("/create-payment-intent", async (req, res) => {
+            const paymentInfo = req.body;
+            const amount = paymentInfo.price * 100;
+
+            const paymentIntent = await stripe.paymentIntents.create({
+                currency: "usd",
+                amount: amount,
+                payment_method_types: ["card"],
+            });
+
+            res.json({
+                clientSecret: paymentIntent.client_secret,
+            });
         });
     }
     finally {
