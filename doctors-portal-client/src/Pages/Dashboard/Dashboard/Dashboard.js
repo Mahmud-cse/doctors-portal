@@ -18,17 +18,9 @@ import Typography from '@mui/material/Typography';
 import { Button } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import {
-    BrowserRouter as Router,
-    Switch,
-    Route,
-    useRouteMatch
+    Outlet
 } from "react-router-dom";
-import DashboardHome from '../DashboardHome/DashboardHome';
-import MakeAdmin from '../MakeAdmin/MakeAdmin';
-import AddDoctor from '../AddDoctor/AddDoctor';
 import useAuth from '../../../hooks/useAuth';
-import AdminRoute from '../../Login/AdminRoute/AdminRoute';
-import Payment from '../Payment/Payment';
 
 const drawerWidth = 210;
 
@@ -36,7 +28,6 @@ function Dashboard(props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
 
-    let { path, url } = useRouteMatch();
     const { admin } = useAuth();
 
     const handleDrawerToggle = () => {
@@ -49,11 +40,11 @@ function Dashboard(props) {
             <Divider />
 
             <NavLink to="/appointment" style={{ color: 'black', textDecoration: 'none' }}><Button color="inherit" >Appointment</Button></NavLink>
-            <NavLink to={`${url}`} style={{ color: 'black', textDecoration: 'none' }}><Button color="inherit" >Dashboard</Button></NavLink> <br></br>
+            <NavLink to="/dashboard" style={{ color: 'black', textDecoration: 'none' }}><Button color="inherit" >Dashboard</Button></NavLink> <br></br>
             {admin &&
                 <Box>
-                    <NavLink to={`${url}/makeAdmin`} style={{ color: 'black', textDecoration: 'none' }}><Button color="inherit" >Make Admin</Button></NavLink>
-                    <NavLink to={`${url}/addDoctor`} style={{ color: 'black', textDecoration: 'none' }}><Button color="inherit" >Add Doctor</Button></NavLink>
+                    <NavLink to="/dashboard/makeAdmin" style={{ color: 'black', textDecoration: 'none' }}><Button color="inherit" >Make Admin</Button></NavLink>
+                    <NavLink to="/dashboard/addDoctor" style={{ color: 'black', textDecoration: 'none' }}><Button color="inherit" >Add Doctor</Button></NavLink>
                 </Box>
             }
 
@@ -136,20 +127,9 @@ function Dashboard(props) {
                 <Toolbar />
 
                 {/* Swith in different route */}
-                <Switch>
-                    <Route exact path={path}>
-                        <DashboardHome></DashboardHome>
-                    </Route>
-                    <AdminRoute path={`${path}/payment/:appointmentId`}>
-                        <Payment></Payment>
-                    </AdminRoute>
-                    <AdminRoute path={`${path}/makeAdmin`}>
-                        <MakeAdmin></MakeAdmin>
-                    </AdminRoute>
-                    <AdminRoute path={`${path}/addDoctor`}>
-                        <AddDoctor></AddDoctor>
-                    </AdminRoute>
-                </Switch>
+                <Outlet>
+
+                </Outlet>
             </Box>
         </Box>
     );
